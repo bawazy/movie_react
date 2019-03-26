@@ -21,21 +21,38 @@ class App extends Component {
   actors:'',
   plot:'',
   year:'',
+  movies:[],
  }
-     
+ 
+   async load(){
+    const response = await axios.get(`https://omdbapi.com?s="2018"&type=movie&page=1&apikey=thewdb`);
+       this.setState({
+         movies: response.data
 
+   })
+    
+  }
+      
+  
+  componentDidMount(){
+       this.load();
+     }
+     
    async getMovie(event){
     
     event.preventDefault();
         var movie = this.input.current.value;
        const response = await axios.get(`https://omdbapi.com?t=${movie}&apikey=thewdb`);
         console.log(response.data);
-        this.setState({poster:response.data.Poster});
-        this.setState({title:response.data.Title});
-        this.setState({genre:response.data.Genre});
-        this.setState({actors:response.data.Actors});
-        this.setState({plot:response.data.Plot});
-        this.setState({year:response.data.Year});
+        this.setState({
+                poster:response.data.Poster,
+                title:response.data.Title,
+                genre:response.data.Genre,
+                actors:response.data.Actors,
+                plot:response.data.Plot,
+                year:response.data.Year
+        });
+  
     } 
 
     
@@ -43,6 +60,17 @@ class App extends Component {
 
 
   render() {
+    var arrMovies = this.state.movies.map((movie,index)=>(
+    <div>
+      <img src={movie.Poster} alt=''/>
+      <h1 key={index}> Title:{movie.Title} </h1>
+      <h2 key={index}>Genre:{movie.Genre}</h2>
+      <h3 key={index}>Actors:{movie.Actors}</h3>
+      <h3 key={index}>Year Released:{movie.Year}</h3>
+      <p key={index}>Plot:{movie.Plot}</p>
+    </div>
+    
+    )); 
 
     return (
       <div className='App'>
@@ -69,6 +97,8 @@ class App extends Component {
         <h3>{this.state.year}</h3>
         <h3>{this.state.actors}</h3>
         <p>{this.state.plot}</p>
+
+     {arrMovies}
 
         </div>
       </div>
